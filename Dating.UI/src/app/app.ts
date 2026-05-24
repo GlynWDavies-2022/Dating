@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -14,11 +13,18 @@ export class App implements OnInit {
 
   protected readonly title = 'Dating Application';
 
-  ngOnInit(): void {
-    this.http.get('https://localhost:5001/api/members').subscribe({
-      next: (subscribe) => console.log(subscribe),
-      error: (error) => console.log(error),
-      complete: () => console.log('Request completed')
-    });
+  protected members = signal<any>([]);
+
+  async ngOnInit() {
+    this.members.set(await this.getMembers());
+  }
+
+  getMembers() {
+    try {
+      return lastValueFrom(this.http.get('https://localhost:5001/api/members'));
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 }
