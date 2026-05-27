@@ -5,9 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dating.API.Controllers;
 
-[Route("api/[controller]")]
-[ApiController]
-public class MembersController(DatingSQLDBContext context) : ControllerBase
+public class MembersController(DatingSQLDBContext context) : BaseApiController
 {
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<User>>> ListAll()
