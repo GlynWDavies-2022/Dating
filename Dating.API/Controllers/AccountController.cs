@@ -37,7 +37,7 @@ public class AccountController(DatingSQLDBContext context) : BaseApiController
 
     private async Task<bool> EmailExists(string email)
     {
-        return await context.Users.AnyAsync(user => user.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+        return await context.Users.AnyAsync(user => EF.Functions.Like(user.Email,email));
     }
 
 }
