@@ -8,8 +8,6 @@ using System.Text;
 
 namespace Dating.API.Controllers;
 
-[Route("api/[controller]")]
-[ApiController]
 public class AccountController(DatingSQLDBContext context) : BaseApiController
 {
     [HttpPost("register")]
