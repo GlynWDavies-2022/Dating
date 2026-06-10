@@ -2,6 +2,8 @@
 // Application Entry Point
 // ------------------------------------------------------------------------------------------------
 
+using Dating.Application.Interfaces;
+using Dating.Application.Services;
 using Dating.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +25,8 @@ builder.Services.AddDbContext<DatingSQLDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DatingSQLDBConnection"));
 });
+
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
