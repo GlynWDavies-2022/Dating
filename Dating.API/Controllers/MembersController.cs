@@ -1,5 +1,6 @@
 ﻿using Dating.Domain.Entities;
 using Dating.Infrastructure.Database;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ public class MembersController(DatingSQLDBContext context) : BaseApiController
         return Ok(members);
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<User?>> GetById(int id)
     {

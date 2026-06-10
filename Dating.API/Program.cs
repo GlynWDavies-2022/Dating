@@ -5,7 +5,10 @@
 using Dating.Application.Interfaces;
 using Dating.Application.Services;
 using Dating.Infrastructure.Database;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +31,22 @@ builder.Services.AddDbContext<DatingSQLDBContext>(options =>
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+{
+    var tokenKey = builder.Configuration["TokenKey"] ?? throw new Exception("Could not retrieve token key.");
+
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey)),
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
 var app = builder.Build();
 
 // ------------------------------------------------------------------------------------------------
@@ -46,6 +65,10 @@ app.UseCors(cpb => cpb
     .AllowAnyMethod()
     .AllowAnyHeader()
 );
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();
 
