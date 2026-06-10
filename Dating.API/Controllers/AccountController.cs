@@ -1,4 +1,5 @@
 ﻿using Dating.Application.DTO;
+using Dating.Application.Extensions;
 using Dating.Application.Interfaces;
 using Dating.Domain.Entities;
 using Dating.Infrastructure.Database;
@@ -33,14 +34,7 @@ public class AccountController(DatingSQLDBContext context, ITokenService tokenSe
 
         await context.SaveChangesAsync();
 
-        var userDTO = new UserDTO
-        {
-            Id = user.Id.ToString(),
-            Email = user.Email,
-            DisplayName = user.DisplayName,
-            ImageURL = string.Empty,
-            Token = tokenService.CreateToken(user)
-        };
+        var userDTO = UserExtensions.ToUserDTO(user, tokenService);
 
         return Ok(userDTO);
     }
@@ -67,14 +61,7 @@ public class AccountController(DatingSQLDBContext context, ITokenService tokenSe
             }
         }
 
-        var userDTO = new UserDTO
-        {
-            Id = user.Id.ToString(),
-            Email = user.Email,
-            DisplayName = user.DisplayName,
-            ImageURL = string.Empty,
-            Token = tokenService.CreateToken(user)
-        };
+        var userDTO = UserExtensions.ToUserDTO(user, tokenService);
 
         return Ok(userDTO);
     }
