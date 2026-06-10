@@ -1,4 +1,5 @@
 ﻿using Dating.Application.DTO;
+using Dating.Application.Interfaces;
 using Dating.Domain.Entities;
 using Dating.Infrastructure.Database;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +9,10 @@ using System.Text;
 
 namespace Dating.API.Controllers;
 
-public class AccountController(DatingSQLDBContext context) : BaseApiController
+public class AccountController(DatingSQLDBContext context, ITokenService tokenService) : BaseApiController
 {
     [HttpPost("register")]
-    public async Task<ActionResult<User>> Register(RegisterDTO registerDTO)
+    public async Task<ActionResult<UserDTO>> Register(RegisterDTO registerDTO)
     {
         if (await EmailExists(registerDTO.Email))
         {
@@ -32,11 +33,20 @@ public class AccountController(DatingSQLDBContext context) : BaseApiController
 
         await context.SaveChangesAsync();
 
-        return Ok(user);
+        var userDTO = new UserDTO
+        {
+            Id = user.Id.ToString(),
+            Email = user.Email,
+            DisplayName = user.DisplayName,
+            ImageURL = string.Empty,
+            Token = tokenService.CreateToken(user)
+        };
+
+        return Ok(userDTO);
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult> Login([FromBody] LoginDTO loginDTO)
+    public async Task<ActionResult<UserDTO>> Login([FromBody] LoginDTO loginDTO)
     {
         var user = await context.Users.SingleOrDefaultAsync(u => u.Email.Equals(loginDTO.Email));
 
@@ -57,7 +67,16 @@ public class AccountController(DatingSQLDBContext context) : BaseApiController
             }
         }
 
-        return Ok();
+        var userDTO = new UserDTO
+        {
+            Id = user.Id.ToString(),
+            Email = user.Email,
+            DisplayName = user.DisplayName,
+            ImageURL = string.Empty,
+            Token = tokenService.CreateToken(user)
+        };
+
+        return Ok(userDTO);
     }
 
     private async Task<bool> EmailExists(string email)
