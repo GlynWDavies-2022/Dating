@@ -33,19 +33,19 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
-{
-    var tokenKey = builder.Configuration["TokenKey"] ?? throw new Exception("Could not retrieve token key.");
+        {
+            var tokenKey = builder.Configuration["TokenKey"] ?? throw new Exception("Could not retrieve token key.");
 
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey)),
-        ClockSkew = TimeSpan.Zero
-    };
-});
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey)),
+                ClockSkew = TimeSpan.Zero
+            };
+        });
 
 var app = builder.Build();
 
