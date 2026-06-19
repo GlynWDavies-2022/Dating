@@ -2,6 +2,7 @@
 // Application Entry Point
 // ------------------------------------------------------------------------------------------------
 
+using Dating.API.Middleware;
 using Dating.Application.Interfaces;
 using Dating.Application.Services;
 using Dating.Infrastructure.Database;
@@ -52,6 +53,12 @@ var app = builder.Build();
 // ------------------------------------------------------------------------------------------------
 // HTTP Request Pipeline
 // ------------------------------------------------------------------------------------------------
+
+// ------------------------------------------------------------------------------------------------
+// Custom Middleware
+// ------------------------------------------------------------------------------------------------
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
