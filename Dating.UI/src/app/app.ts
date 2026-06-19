@@ -34,13 +34,7 @@ export class App implements OnInit {
 
   setCurrentUser() {
 
-    const userString = localStorage.getItem('user');
-
-    if (!userString) return;
-
-    const user = JSON.parse(userString);
-
-    this.accountService.currentUser.set(user);
+    
   }
 
   getMembers() {
